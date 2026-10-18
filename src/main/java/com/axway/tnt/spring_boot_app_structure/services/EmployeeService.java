@@ -12,6 +12,7 @@ import org.springframework.util.ReflectionUtils;
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -27,9 +28,8 @@ public class EmployeeService {
     }
 
 
-    public EmployeeDTO getEmployeeById(Long id) {
-        EmployeeEntity employeeEntity = employeeRepository.findById(id).orElse(null);
-        return mapper.map(employeeEntity, EmployeeDTO.class);
+    public Optional<EmployeeDTO> getEmployeeById(Long id) {
+        return employeeRepository.findById(id).map(employeeEntity -> mapper.map(employeeEntity, EmployeeDTO.class));
     }
 
     public List<EmployeeDTO> getAllEmployees() {
@@ -51,14 +51,15 @@ public class EmployeeService {
         return mapper.map(updatedEntity, EmployeeDTO.class);
     }
 
-    public void deleteById(Long id) {
+    public boolean deleteById(Long id) {
         employeeRepository.deleteById(id);
+        return true;
     }
 
     public EmployeeDTO updatePartialEmployeeById(Long id, Map<String, Object> updates) {
         boolean exists = employeeRepository.existsById(id);
         if(!exists) {
-            LOG.error("Not Found id: " + id);
+            LOG.error("Employee Not Found with id: " + id);
             return null;
         }
         EmployeeEntity employeeEntity = employeeRepository.findById(id).get();
