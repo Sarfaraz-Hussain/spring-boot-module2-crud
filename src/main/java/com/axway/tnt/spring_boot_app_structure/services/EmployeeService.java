@@ -6,9 +6,10 @@ import com.axway.tnt.spring_boot_app_structure.repos.EmployeeRepository;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.modelmapper.ModelMapper;
-import org.springframework.data.util.ReflectionUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ReflectionUtils;
 
+import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -62,7 +63,10 @@ public class EmployeeService {
         }
         EmployeeEntity employeeEntity = employeeRepository.findById(id).get();
         updates.forEach((field, value) -> {
-            
+            Field fieldToBeUpdate = ReflectionUtils.findField(EmployeeEntity.class, field);
+            ReflectionUtils.makeAccessible(fieldToBeUpdate);
+            ReflectionUtils.setField(fieldToBeUpdate, employeeEntity, value);
         });
+        return mapper.map(employeeRepository.save(employeeEntity), EmployeeDTO.class);
     }
 }
