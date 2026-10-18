@@ -20,6 +20,7 @@ public class EmployeeEntity {
     private String name;
     private Integer age;
     private String email;
+    private String role;
     @JsonProperty("isActive")
     private Boolean isActive;
 }

@@ -2,6 +2,7 @@ package com.axway.tnt.spring_boot_app_structure.controllers;
 
 import com.axway.tnt.spring_boot_app_structure.dto.EmployeeDTO;
 import com.axway.tnt.spring_boot_app_structure.services.EmployeeService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -33,7 +34,7 @@ public class EmployeeController {
     }
 
     @PostMapping
-    public ResponseEntity<EmployeeDTO> createEmployee(@RequestBody EmployeeDTO inputEmp){
+    public ResponseEntity<EmployeeDTO> createEmployee(@RequestBody @Valid EmployeeDTO inputEmp){
        EmployeeDTO savedEmployee = employeeService.createEmployee(inputEmp);
        return new ResponseEntity<>(savedEmployee, HttpStatus.CREATED);
     }
