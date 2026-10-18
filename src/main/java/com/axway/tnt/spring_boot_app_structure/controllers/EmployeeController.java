@@ -1,6 +1,7 @@
 package com.axway.tnt.spring_boot_app_structure.controllers;
 
 import com.axway.tnt.spring_boot_app_structure.dto.EmployeeDTO;
+import com.axway.tnt.spring_boot_app_structure.exceptions.ResourceNotFoundException;
 import com.axway.tnt.spring_boot_app_structure.services.EmployeeService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @RestController
@@ -25,7 +27,7 @@ public class EmployeeController {
         Optional<EmployeeDTO> employeeDto = employeeService.getEmployeeById(employeeID);
         return employeeDto
                 .map(employeeDTO -> ResponseEntity.ok(employeeDTO))
-                .orElse(ResponseEntity.notFound().build());
+                .orElseThrow(() -> new ResourceNotFoundException("Employee not found with id: " + employeeID));
     }
 
     @GetMapping
